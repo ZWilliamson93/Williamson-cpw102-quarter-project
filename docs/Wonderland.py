@@ -1,4 +1,4 @@
-from adventurelib import *
+from adventurelib import Room, Item, Bag, start, say
 
 Room.items = Bag()
 
@@ -20,10 +20,18 @@ valley.items = Bag({mallet,})
 inventory = Bag()
 
 
-@when('north', direction='north')
-@when('south', direction='south')
-@when('east', direction='east')
-@when('west', direction='west')
+def go(current_room, direction):
+    if direction == "north" and current_room.north:
+        return current_room.north
+    elif direction == "south" and current_room.south:
+        return current_room.south
+    elif direction == "east" and current_room.east:
+        return current_room.east
+    elif direction == "west" and current_room.west:
+        return current_room.west
+    else:
+        print("You can't go that way.")
+        return current_room
 def go(direction):
     global current_room
     room = current_room.exit(direction)
@@ -31,10 +39,7 @@ def go(direction):
         current_room = room
         say('You go %s.' % direction)
         look()
-        if room == magic_forest:
-            set_context('magic_aura')
-        else:
-            set_context('default')
+       
 @when('take ITEM')
 def take(item):
     obj = current_room.items.take(item)
